@@ -1,69 +1,76 @@
-import Image from "next/image";
+import SchoolSearch from '@/components/SchoolSearch';
+import FavoriteSchools from '@/components/FavoriteSchools';
+import FavoriteMeals from '@/components/FavoriteMeals';
+import IntroScreen from '@/components/IntroScreen';
+import AllergySettings from '@/components/AllergySettings';
+import Link from 'next/link';
+import Image from 'next/image';
+
+export const metadata = {
+  title: '오늘밥 - 학교 급식 알리미 & 급식 게시판',
+  description: '전국 학교의 급식 식단을 쉽고 빠르게 확인하고 급식 게시판에서 식판 사진과 이야기를 나눠보세요.',
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <IntroScreen />
+      <main className="layout-wrapper">
+        <h1 className="title">
+          <div style={{ background: 'var(--primary-color)', borderRadius: '24px', padding: '4px', display: 'flex' }}>
+            <span style={{ fontSize: '2.5rem', background: '#fff', borderRadius: '20px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🍚</span>
+          </div>
+          오늘밥
+        </h1>
+        
+        <div style={{ marginBottom: '1.5rem' }}>
+          <AllergySettings />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Board Banner Link */}
+        <Link 
+          href="/board"
+          style={{
+            textDecoration: 'none',
+            width: '100%',
+            maxWidth: '600px',
+            marginBottom: '1.8rem',
+            display: 'block'
+          }}
+        >
+          <div 
+            className="glass-container"
+            style={{
+              padding: '1.2rem 1.6rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.12), rgba(244, 63, 94, 0.08))',
+              border: '1px solid rgba(249, 115, 22, 0.25)',
+              borderRadius: '20px',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              cursor: 'pointer'
+            }}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span style={{ fontSize: '2rem' }}>💬</span>
+              <div>
+                <div style={{ fontWeight: '700', fontSize: '1.1rem', color: 'var(--text-main)' }}>
+                  급식 게시판 바로가기
+                </div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  오늘 먹은 급식 사진과 학생들의 생생한 리뷰를 확인해보세요!
+                </div>
+              </div>
+            </div>
+            <span style={{ fontSize: '1.3rem', color: 'var(--primary-color)', fontWeight: 'bold' }}>&rarr;</span>
+          </div>
+        </Link>
+
+        <SchoolSearch />
+        <FavoriteSchools />
+        <FavoriteMeals />
       </main>
-    </div>
+    </>
   );
 }
