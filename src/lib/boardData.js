@@ -9,7 +9,7 @@ export const INITIAL_POSTS = [
     category: '✨ 급식 자랑',
     schoolName: '천안불무초등학교',
     authorId: 'user_minwoo',
-    authorName: '급식대장 민우',
+    authorName: '익명의 학생',
     authorAvatar: '🧑‍🍳',
     title: '오늘 우리 학교 치즈돈가스 역대급 바삭함 실화냐?! 🍱🔥',
     content: '오늘 나온 수제 치즈 돈가스 튀김옷 진짜 대박 바삭하고 소스도 달콤해서 밥 두 그릇 비웠습니다 ㅋㅋㅋ 칼칼한 김치찌개랑 마카로니 콘샐러드에 딸기우유까지 완벽한 조합 인정? 다들 오늘 급식 뭐 나왔나요??',
@@ -22,7 +22,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-1',
         authorId: 'user_jiyu',
-        authorName: '지유',
+        authorName: '익명의 학생',
         authorAvatar: '👩‍🎓',
         comment: '와 우리 학교는 오늘 생선까스 나왔는데 진짜 부럽네요 ㅠㅠㅠ',
         createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString()
@@ -30,7 +30,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-2',
         authorId: 'user_teacher',
-        authorName: '영양사 썬생님',
+        authorName: '익명의 학생',
         authorAvatar: '🌟',
         comment: '학생들이 맛있게 먹어주니 새벽부터 준비한 보람이 있네요! 골고루 먹고 항상 건강하세요~^^',
         createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString()
@@ -38,7 +38,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-3',
         authorId: 'user_choko',
-        authorName: '초코송이',
+        authorName: '익명의 학생',
         authorAvatar: '🍫',
         comment: '딸기우유까지 나왔다고? 전학 가고 싶다 ㅋㅋㅋ',
         createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString()
@@ -50,7 +50,7 @@ export const INITIAL_POSTS = [
     category: '🍚 오늘의 급식',
     schoolName: '율하초등학교',
     authorId: 'user_seoyun',
-    authorName: '맛잘알 서윤이',
+    authorName: '익명의 학생',
     authorAvatar: '👩‍🎓',
     title: '비빔밥의 날! 반숙 계란후라이에 국물 떡볶이 조합 미쳤다 😋',
     content: '나물도 듬뿍 들어가고 볶음 소고기랑 참기름 고소한 냄새가 복도 끝까지 났어요! 거기에 사이드로 나온 떡볶이랑 바삭한 군만두까지 배 터지게 먹었음 ㅎㅎ 후식으로 달콤한 수박까지 완벽한 식단이었습니다!',
@@ -63,7 +63,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-4',
         authorId: 'user_taeho',
-        authorName: '축구왕 태호',
+        authorName: '익명의 학생',
         authorAvatar: '⚽',
         comment: '비빔밥 비빌 때 참기름이랑 고추장 넉넉하게 넣으면 진짜 꿀맛 인정!',
         createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString()
@@ -71,7 +71,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-5',
         authorId: 'user_minjung',
-        authorName: '민정이',
+        authorName: '익명의 학생',
         authorAvatar: '🐱',
         comment: '저희 학교도 다음 주에 비빔밥 나오던데 벌써부터 기대돼요 ㅎㅎ',
         createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
@@ -83,7 +83,7 @@ export const INITIAL_POSTS = [
     category: '🥗 영양사 꿀팁',
     schoolName: '서울교육지원청 영양교실',
     authorId: 'user_nutritionist',
-    authorName: '행복영양사 박쌤',
+    authorName: '익명의 학생',
     authorAvatar: '👩‍🍳',
     title: '[영양 꿀팁] 오늘 급식에 나온 잡곡밥과 제철 채소의 비밀! 🌱',
     content: '학생 여러분 안녕하세요! 오늘 식단에 사용된 현미와 흑미는 집중력을 높여주는 비타민 B군이 풍부하답니다. 알레르기 식품 표시(1~19번)도 꼭 확인하고, 잔반 줄이기 챌린지에도 많은 참여 부탁해요! 여러분이 학교 급식에서 가장 좋아하는 국 메뉴는 무엇인가요? 댓글로 편하게 알려주세요~!',
@@ -96,7 +96,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-6',
         authorId: 'user_eunwoo',
-        authorName: '은우',
+        authorName: '익명의 학생',
         authorAvatar: '🧑‍🎓',
         comment: '선생님 저는 쇠고기미역국이랑 어묵탕이 제일 맛있어요!',
         createdAt: new Date(Date.now() - 1000 * 60 * 240).toISOString()
@@ -104,7 +104,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-7',
         authorId: 'user_dohyun',
-        authorName: '도현',
+        authorName: '익명의 학생',
         authorAvatar: '⚡',
         comment: '오늘 잔반 안 남기고 다 먹어서 스티커 2개 받았어요 ㅎㅎ',
         createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString()
@@ -116,7 +116,7 @@ export const INITIAL_POSTS = [
     category: '💬 수다방',
     schoolName: '온양중학교',
     authorId: 'user_junhyeok',
-    authorName: '급식러버 준혁',
+    authorName: '익명의 학생',
     authorAvatar: '🍱',
     title: '솔직히 금요일 급식이 항상 제일 맛있는 거 국룰 맞죠? ㅋㅋㅋ',
     content: '월화수목도 맛있지만 금요일만 되면 스파게티나 치킨마요덮밥이나 수제버거 같은 특별 메뉴 자주 나오는 거 같아요 ㅋㅋ 이번 주 금요일 메뉴 스포 좀 해주실 분 계신가요??',
@@ -129,7 +129,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-8',
         authorId: 'user_sieun',
-        authorName: '시은',
+        authorName: '익명의 학생',
         authorAvatar: '🌸',
         comment: '인정 ㅋㅋㅋ 금요일은 4교시 종 치자마자 식당으로 뛰어감',
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString()
@@ -137,7 +137,7 @@ export const INITIAL_POSTS = [
       {
         id: 'c-9',
         authorId: 'user_chan',
-        authorName: '찬이',
+        authorName: '익명의 학생',
         authorAvatar: '🎮',
         comment: '우리 학교 이번 주 금요일은 잔치국수에 닭꼬치 나온대요 대박!',
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 16).toISOString()
@@ -149,18 +149,45 @@ export const INITIAL_POSTS = [
 export const getBoardPosts = () => {
   if (typeof window === 'undefined') return INITIAL_POSTS;
   const saved = localStorage.getItem('board_posts');
+  let posts = INITIAL_POSTS;
+
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        posts = parsed;
       }
     } catch (e) {}
   }
 
-  // Initialize with seed posts
-  localStorage.setItem('board_posts', JSON.stringify(INITIAL_POSTS));
-  return INITIAL_POSTS;
+  // Ensure all past and current users are displayed as '익명의 학생'
+  let modified = false;
+  const anonymized = posts.map((post) => {
+    let postMod = false;
+    const newPost = { ...post };
+    if (newPost.authorName !== '익명의 학생') {
+      newPost.authorName = '익명의 학생';
+      postMod = true;
+    }
+    if (Array.isArray(newPost.comments)) {
+      const newComments = newPost.comments.map((c) => {
+        if (c.authorName !== '익명의 학생') {
+          postMod = true;
+          return { ...c, authorName: '익명의 학생' };
+        }
+        return c;
+      });
+      newPost.comments = newComments;
+    }
+    if (postMod) modified = true;
+    return newPost;
+  });
+
+  if (modified || !saved) {
+    localStorage.setItem('board_posts', JSON.stringify(anonymized));
+  }
+
+  return anonymized;
 };
 
 export const saveBoardPosts = (posts) => {
@@ -172,9 +199,9 @@ export const saveBoardPosts = (posts) => {
 
 export const createBoardPost = ({ title, content, category, schoolName, image }) => {
   const posts = getBoardPosts();
-  const curUser = getCurrentUser();
   const authorId = getClientId();
-  const authorName = curUser?.name || '익명 학생';
+  const authorName = '익명의 학생';
+  const curUser = getCurrentUser();
   const authorAvatar = curUser?.avatar || '🧑‍🎓';
   const userSchool = schoolName || curUser?.schoolInfo || '학교 미설정';
 
@@ -226,9 +253,9 @@ export const toggleLikePost = (postId) => {
 
 export const addPostComment = (postId, commentText) => {
   const posts = getBoardPosts();
-  const curUser = getCurrentUser();
   const authorId = getClientId();
-  const authorName = curUser?.name || '익명 학생';
+  const authorName = '익명의 학생';
+  const curUser = getCurrentUser();
   const authorAvatar = curUser?.avatar || '🧑‍🎓';
 
   const newComment = {

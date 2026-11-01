@@ -177,7 +177,21 @@ export const getMealReviews = (schoolCode, date, mealType) => {
     }
   }
 
-  return reviews;
+  // Ensure all review authors display '익명의 학생'
+  let modified = false;
+  const anonymized = reviews.map(r => {
+    if (r.authorName !== '익명의 학생') {
+      modified = true;
+      return { ...r, authorName: '익명의 학생' };
+    }
+    return r;
+  });
+
+  if (modified) {
+    localStorage.setItem(key, JSON.stringify(anonymized));
+  }
+
+  return anonymized;
 };
 
 export const saveMealReview = (schoolCode, date, mealType, reviewData) => {
@@ -185,7 +199,7 @@ export const saveMealReview = (schoolCode, date, mealType, reviewData) => {
   const key = getMealReviewsKey(schoolCode, date, mealType);
   const curUser = getCurrentUser();
   const authorId = getClientId();
-  const authorName = curUser?.name || '익명의 학생';
+  const authorName = '익명의 학생';
   const authorAvatar = curUser?.avatar || '🧑‍🎓';
 
   const reviews = getMealReviews(schoolCode, date, mealType);

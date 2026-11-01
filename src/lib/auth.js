@@ -26,28 +26,14 @@ export const getLocalProfile = () => {
   try {
     const saved = localStorage.getItem('app_local_profile');
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      if (!parsed.name || parsed.name !== '익명의 학생') {
+        parsed.name = '익명의 학생';
+        localStorage.setItem('app_local_profile', JSON.stringify(parsed));
+      }
+      return parsed;
     }
 
-    // Check if there was an existing name/avatar in legacy current_user
-    const legacyCur = localStorage.getItem('current_user');
-    if (legacyCur) {
-      try {
-        const parsed = JSON.parse(legacyCur);
-        const migrated = {
-          name: parsed.name || DEFAULT_PROFILE.name,
-          avatar: parsed.avatar || DEFAULT_PROFILE.avatar,
-          schoolInfo: parsed.schoolInfo || DEFAULT_PROFILE.schoolInfo,
-          bio: parsed.bio || DEFAULT_PROFILE.bio,
-          createdAt: parsed.createdAt || DEFAULT_PROFILE.createdAt
-        };
-        localStorage.setItem('app_local_profile', JSON.stringify(migrated));
-        localStorage.removeItem('current_user');
-        return migrated;
-      } catch (e) {}
-    }
-
-    // Initialize default profile
     localStorage.setItem('app_local_profile', JSON.stringify(DEFAULT_PROFILE));
     return DEFAULT_PROFILE;
   } catch (e) {
