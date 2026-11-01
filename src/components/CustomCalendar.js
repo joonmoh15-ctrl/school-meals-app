@@ -70,14 +70,15 @@ export default function CustomCalendar({ selectedDate, onSelect, onClose, office
     <div 
       className="glass-container" 
       style={{ 
-        padding: '1.5rem', 
-        width: '340px', 
+        padding: '1.2rem 1rem', 
+        width: 'min(330px, calc(100vw - 24px))', 
         position: 'absolute', 
         zIndex: 100, 
         marginTop: '10px',
         left: '50%',
         transform: 'translateX(-50%)',
-        boxShadow: '0 10px 40px rgba(0,0,0,0.15)'
+        boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+        boxSizing: 'border-box'
       }}
       onClick={(e) => e.stopPropagation()}
     >

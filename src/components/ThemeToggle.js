@@ -40,19 +40,7 @@ export default function ThemeToggle() {
   return (
     <button 
       onClick={toggleTheme}
-      style={{
-        background: 'var(--card-bg)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '50%',
-        width: '44px',
-        height: '44px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        fontSize: '1.2rem',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}
+      className="theme-toggle-btn"
       aria-label="Toggle Dark Mode"
     >
       {isDark ? '🌙' : '☀️'}

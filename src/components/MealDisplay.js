@@ -104,42 +104,53 @@ export default function MealDisplay({ officeCode, schoolCode, initialName, initi
     <div style={{ width: '100%', maxWidth: '900px', margin: '0 auto' }}>
       
       {/* Date Navigation & Allergy Settings */}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginBottom: '20px', position: 'relative' }}>
-        <button onClick={handlePrevDay} className="btn-secondary" style={{ padding: '0.6rem 1.2rem', fontSize: '1rem' }}>&larr; 이전</button>
-        
-        <div style={{ position: 'relative' }}>
-          <button 
-            onClick={() => setShowCalendar(!showCalendar)}
-            style={{ 
-              background: 'transparent',
-              border: '2px solid var(--primary-light)',
-              borderRadius: '9999px',
-              padding: '0.6rem 1.5rem',
-              color: 'var(--primary-color)',
-              fontWeight: '700',
-              fontSize: '1.1rem',
-              cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: '8px'
-            }}
-          >
-            📅 {getFormattedDisplayDate()} ▾
-          </button>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        gap: '12px', 
+        marginBottom: '20px', 
+        flexWrap: 'wrap',
+        width: '100%'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
+          <button onClick={handlePrevDay} className="btn-secondary" style={{ padding: '0.5rem 0.85rem', fontSize: '0.9rem' }}>&larr; 이전</button>
           
-          {showCalendar && (
-            <CustomCalendar 
-              selectedDate={date} 
-              onSelect={(newDate) => setDate(newDate)} 
-              onClose={() => setShowCalendar(false)} 
-              officeCode={officeCode}
-              schoolCode={schoolCode}
-            />
-          )}
+          <div style={{ position: 'relative' }}>
+            <button 
+              onClick={() => setShowCalendar(!showCalendar)}
+              style={{ 
+                background: 'transparent',
+                border: '2px solid var(--primary-light)',
+                borderRadius: '9999px',
+                padding: '0.5rem 1rem',
+                color: 'var(--primary-color)',
+                fontWeight: '700',
+                fontSize: '0.92rem',
+                cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '6px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              📅 {getFormattedDisplayDate()} ▾
+            </button>
+            
+            {showCalendar && (
+              <CustomCalendar 
+                selectedDate={date} 
+                onSelect={(newDate) => setDate(newDate)} 
+                onClose={() => setShowCalendar(false)} 
+                officeCode={officeCode}
+                schoolCode={schoolCode}
+              />
+            )}
+          </div>
+
+          <button onClick={handleNextDay} className="btn-secondary" style={{ padding: '0.5rem 0.85rem', fontSize: '0.9rem' }}>다음 &rarr;</button>
         </div>
 
-        <button onClick={handleNextDay} className="btn-secondary" style={{ padding: '0.6rem 1.2rem', fontSize: '1rem' }}>다음 &rarr;</button>
-
-        {/* Always visible allergy settings button */}
-        <div style={{ position: 'absolute', right: 0 }}>
+        {/* Allergy Settings */}
+        <div>
           <AllergySettings />
         </div>
       </div>
@@ -150,7 +161,7 @@ export default function MealDisplay({ officeCode, schoolCode, initialName, initi
           background: 'rgba(239, 68, 68, 0.1)',
           border: '1px solid rgba(239, 68, 68, 0.2)',
           borderRadius: '16px',
-          padding: '1rem 1.5rem',
+          padding: '0.9rem 1.2rem',
           marginBottom: '20px',
           display: 'flex',
           justifyContent: 'space-between',
@@ -158,10 +169,10 @@ export default function MealDisplay({ officeCode, schoolCode, initialName, initi
         }}>
           <div>
             <div style={{ color: 'var(--secondary-color)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <span style={{ background: 'var(--secondary-color)', color: 'white', width: '24px', height: '24px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>!</span>
+              <span style={{ background: 'var(--secondary-color)', color: 'white', width: '22px', height: '22px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px' }}>!</span>
               내 알레르기 관심 식품 감지!
             </div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', opacity: 0.8 }}>
+            <div style={{ fontSize: '0.88rem', color: 'var(--text-main)', opacity: 0.85 }}>
               오늘 급식 식단에 설정하신 관심 식품 <strong style={{ color: 'var(--secondary-color)' }}>{detectedAllergyNames.join(', ')}</strong> 성분이 포함되어 있습니다.
             </div>
           </div>
@@ -179,28 +190,24 @@ export default function MealDisplay({ officeCode, schoolCode, initialName, initi
             return (
               <div key={index} className="glass-container" style={{ padding: '0', overflow: 'hidden' }}>
                 {/* Header */}
-                <div style={{ 
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '1.5rem 2rem', borderBottom: '1px solid var(--border-color)',
-                  background: 'rgba(255,255,255,0.4)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ background: 'var(--primary-color)', color: 'white', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+                <div className="meal-card-header">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ background: 'var(--primary-color)', color: 'white', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.15rem' }}>
                       🍽️
                     </div>
-                    <h2 style={{ fontSize: '1.4rem', fontWeight: 'bold', margin: 0 }}>
+                    <h2 style={{ fontSize: '1.3rem', fontWeight: 'bold', margin: 0, whiteSpace: 'nowrap' }}>
                       {meal.mealType}
                     </h2>
                   </div>
                   {/* Mock Origin Info */}
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ background: '#dcfce7', color: '#166534', padding: '2px 6px', borderRadius: '4px' }}>원산지</span> 
-                    상세 원산지는 학교 공지를 참고하세요
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ background: '#dcfce7', color: '#166534', padding: '2px 6px', borderRadius: '4px', whiteSpace: 'nowrap' }}>원산지</span> 
+                    <span>상세 원산지는 학교 공지 참고</span>
                   </div>
                 </div>
                 
                 {/* Body */}
-                <div style={{ padding: '2rem' }}>
+                <div className="meal-card-body">
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {dishes.map((dish, i) => {
                       const isFav = favorites.includes(dish.name);
@@ -209,22 +216,23 @@ export default function MealDisplay({ officeCode, schoolCode, initialName, initi
                       return (
                         <li key={i} style={{ 
                           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                          padding: '12px 0', 
-                          borderBottom: i < dishes.length - 1 ? '1px solid var(--border-color)' : 'none'
+                          padding: '10px 0', 
+                          borderBottom: i < dishes.length - 1 ? '1px solid var(--border-color)' : 'none',
+                          gap: '10px'
                         }}>
-                          <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '1.15rem', fontWeight: '600' }}>{dish.name}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px', flexWrap: 'wrap' }}>
+                              <span style={{ fontSize: '1.05rem', fontWeight: '600' }}>{dish.name}</span>
                               {dish.allergyCodes.length > 0 && !hasMyAllergy && (
-                                <span className="pill-tag" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--text-muted)' }}>
+                                <span className="pill-tag" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
                                   알레르기: {dish.allergyNames.join(', ')}
                                 </span>
                               )}
                             </div>
                             
                             {hasMyAllergy && (
-                              <div style={{ marginTop: '4px' }}>
-                                <span className="pill-tag danger">
+                              <div style={{ marginTop: '3px' }}>
+                                <span className="pill-tag danger" style={{ fontSize: '0.78rem', whiteSpace: 'normal', lineHeight: '1.3' }}>
                                   ⚠️ 내 관심 알레르기: {dish.allergyCodes.filter(c => myAllergies.includes(c)).map(c => ALLERGY_MAP[c]).join(', ')}
                                 </span>
                               </div>
@@ -237,9 +245,9 @@ export default function MealDisplay({ officeCode, schoolCode, initialName, initi
                               background: isFav ? 'rgba(244, 63, 94, 0.12)' : 'rgba(0, 0, 0, 0.04)', 
                               border: isFav ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid rgba(0, 0, 0, 0.08)', 
                               cursor: 'pointer', 
-                              fontSize: '1.25rem',
-                              width: '38px',
-                              height: '38px',
+                              fontSize: '1.2rem',
+                              width: '36px',
+                              height: '36px',
                               borderRadius: '50%',
                               display: 'flex',
                               alignItems: 'center',
@@ -268,10 +276,7 @@ export default function MealDisplay({ officeCode, schoolCode, initialName, initi
                 </div>
                 
                 {/* Footer / Calories & Nutrition */}
-                <div style={{ 
-                  padding: '1.5rem 2rem', background: 'rgba(249, 115, 22, 0.05)', 
-                  borderTop: '1px solid rgba(249, 115, 22, 0.1)'
-                }}>
+                <div className="meal-card-footer">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
                     <span style={{ color: 'var(--primary-color)', fontSize: '1.2rem' }}>⚡</span>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>

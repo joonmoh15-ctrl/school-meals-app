@@ -41,7 +41,7 @@ export default function Home() {
           <div 
             className="glass-container"
             style={{
-              padding: '1.2rem 1.6rem',
+              padding: '1rem 1.25rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',

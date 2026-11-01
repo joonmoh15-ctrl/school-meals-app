@@ -49,7 +49,9 @@ export default async function SchoolPage({ searchParams }) {
         />
       </div>
       
-      <h1 className="title" style={{ fontSize: '2.5rem', marginBottom: '2rem' }}>{name}</h1>
+      <h1 className="title" style={{ fontSize: 'clamp(1.4rem, 5vw, 2.4rem)', marginBottom: '1.5rem', wordBreak: 'keep-all', textAlign: 'center' }}>
+        {name}
+      </h1>
       
       <MealDisplay 
         officeCode={office} 

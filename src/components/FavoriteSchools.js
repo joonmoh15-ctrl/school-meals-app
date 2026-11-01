@@ -40,7 +40,7 @@ export default function FavoriteSchools() {
   if (favorites.length === 0) return null;
 
   return (
-    <div className="glass-container" style={{ width: '100%', maxWidth: '600px', margin: '3rem auto 0 auto', padding: '2.5rem' }}>
+    <div className="glass-container" style={{ width: '100%', maxWidth: '600px', margin: '2rem auto 0 auto' }}>
       <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
         ⭐ 즐겨찾는 학교
       </h3>

@@ -279,8 +279,8 @@ export default function ProfilePage() {
       <div style={{ 
         width: '100%', 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', 
-        gap: '12px', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
+        gap: '10px', 
         marginBottom: '2rem' 
       }}>
         <div 

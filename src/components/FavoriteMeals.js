@@ -45,7 +45,6 @@ export default function FavoriteMeals() {
         width: '100%', 
         maxWidth: '640px', 
         margin: '2rem auto 0 auto', 
-        padding: '2rem',
         border: '1px solid var(--border-color)',
         borderRadius: '24px',
         boxShadow: '0 8px 30px rgba(0, 0, 0, 0.04)'

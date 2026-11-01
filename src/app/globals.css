@@ -38,12 +38,24 @@
   margin: 0;
 }
 
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  word-break: keep-all; /* Prevents character-by-character Korean wrapping */
+  overflow-wrap: break-word;
+}
+
 body {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
   background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
   transition: background-color 0.3s;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
 }
 
 .glass-container {
@@ -52,19 +64,21 @@ body {
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   padding: 2rem;
+  max-width: 100%;
 }
 
 .glass-input {
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 0.9rem 1.4rem;
   border-radius: 9999px;
   border: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.6);
   color: var(--text-main);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-family: inherit;
   outline: none;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -82,13 +96,18 @@ body {
   background: var(--primary-color);
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
+  padding: 0.75rem 1.4rem;
   border-radius: 9999px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .btn-primary:hover {
@@ -104,11 +123,17 @@ body {
   background: var(--bg-color);
   color: var(--text-main);
   border: 1px solid var(--border-color);
-  padding: 0.8rem 1.5rem;
+  padding: 0.75rem 1.4rem;
   border-radius: 9999px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 .btn-secondary:hover {
   background: rgba(0,0,0,0.05);
@@ -117,23 +142,25 @@ body {
 .layout-wrapper {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: 4.8rem 1.5rem 3rem 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  width: 100%;
 }
 
 h1.title {
-  font-size: 3rem;
+  font-size: 2.8rem;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   color: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
+  word-break: keep-all;
 }
 
 .pill-tag {
@@ -145,6 +172,7 @@ h1.title {
   font-weight: 600;
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .pill-tag.danger {
@@ -169,19 +197,20 @@ h1.title {
 
 .review-star {
   color: #fbbf24;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   cursor: pointer;
   transition: transform 0.1s;
+  user-select: none;
 }
 
 .review-star:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 6px;
   margin-top: 1rem;
 }
 
@@ -191,7 +220,7 @@ h1.title {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
@@ -228,12 +257,120 @@ h1.title {
 .calendar-day.has-meal::after {
   content: '';
   display: block;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--primary-color);
-  margin-top: 4px;
+  margin-top: 3px;
 }
 .calendar-day.selected.has-meal::after {
   background: white;
+}
+
+/* ========================================================
+   Mobile Responsive Rules (< 640px)
+   ======================================================== */
+@media (max-width: 640px) {
+  .layout-wrapper {
+    padding: 4.4rem 0.85rem 2rem 0.85rem;
+  }
+
+  .glass-container {
+    padding: 1.25rem 0.9rem !important;
+    border-radius: 18px !important;
+  }
+
+  h1.title {
+    font-size: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    gap: 8px !important;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.6rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .glass-input {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.95rem !important;
+  }
+}
+
+/* Responsive Component Classes */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.8rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+.meal-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.4);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.meal-card-body {
+  padding: 1.5rem 1.75rem;
+}
+
+.meal-card-footer {
+  padding: 1.25rem 1.75rem;
+  background: rgba(249, 115, 22, 0.05);
+  border-top: 1px solid rgba(249, 115, 22, 0.1);
+}
+
+.meal-review-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.meal-review-form {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    padding: 0.65rem 0.8rem !important;
+  }
+
+  .meal-card-header {
+    padding: 1rem 0.9rem !important;
+  }
+
+  .meal-card-body {
+    padding: 1rem 0.85rem !important;
+  }
+
+  .meal-card-footer {
+    padding: 1rem 0.85rem !important;
+  }
+
+  .meal-review-container {
+    padding: 12px 10px !important;
+    margin-top: 14px !important;
+  }
+
+  .meal-review-form {
+    padding: 12px 10px !important;
+  }
 }

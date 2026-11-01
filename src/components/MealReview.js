@@ -86,29 +86,29 @@ export default function MealReview({ schoolCode, date, mealType }) {
     const day = d.getDate();
     const h = d.getHours();
     const min = String(d.getMinutes()).padStart(2, '0');
-    return `${m}월 ${day}일 ${h}:${min}`;
+    return `${m}/${day} ${h}:${min}`;
   };
 
   return (
-    <div style={{ marginTop: '20px', padding: '20px', background: 'var(--card-bg)', borderRadius: '16px', border: '1px solid var(--border-color)', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+    <div className="meal-review-container">
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
-        <h4 style={{ margin: 0, fontSize: '1.15rem', color: 'var(--text-main)', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-main)', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
           ⭐ 급식 한줄평 & 리뷰
         </h4>
 
         {avgRating && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(251, 191, 36, 0.15)', padding: '4px 12px', borderRadius: '9999px', fontSize: '0.9rem', fontWeight: '600', color: '#b45309' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(251, 191, 36, 0.15)', padding: '3px 10px', borderRadius: '9999px', fontSize: '0.85rem', fontWeight: '600', color: '#b45309', whiteSpace: 'nowrap' }}>
             <span>⭐ {avgRating}</span>
-            <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>({reviews.length}명 참여)</span>
+            <span style={{ fontSize: '0.75rem', opacity: 0.85 }}>({reviews.length}명 참여)</span>
           </div>
         )}
       </div>
 
       {/* Reviews List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
         {reviews.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '1.5rem', background: 'rgba(0,0,0,0.02)', borderRadius: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+          <div style={{ textAlign: 'center', padding: '1.2rem', background: 'rgba(0,0,0,0.02)', borderRadius: '12px', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
             아직 작성된 리뷰가 없습니다. 이 급식의 첫 번째 리뷰어가 되어보세요!
           </div>
         ) : (
@@ -119,7 +119,7 @@ export default function MealReview({ schoolCode, date, mealType }) {
               <div 
                 key={rev.id || `${rev.authorId}-${rev.createdAt}`}
                 style={{
-                  padding: '12px 16px',
+                  padding: '10px 14px',
                   borderRadius: '12px',
                   background: isMine ? 'rgba(249, 115, 22, 0.06)' : 'rgba(255, 255, 255, 0.5)',
                   border: isMine ? '1px solid rgba(249, 115, 22, 0.3)' : '1px solid var(--border-color)',
@@ -128,47 +128,50 @@ export default function MealReview({ schoolCode, date, mealType }) {
                   gap: '6px'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                     <span style={{ 
-                      fontSize: '1.1rem', 
-                      width: '28px', 
-                      height: '28px', 
+                      fontSize: '1rem', 
+                      width: '26px', 
+                      height: '26px', 
                       borderRadius: '50%', 
                       background: 'rgba(0,0,0,0.05)', 
                       display: 'flex', 
                       alignItems: 'center', 
-                      justifyContent: 'center' 
+                      justifyContent: 'center',
+                      flexShrink: 0
                     }}>
                       {rev.authorAvatar || '🧑‍🎓'}
                     </span>
-                    <strong style={{ fontSize: '0.95rem', color: 'var(--text-main)' }}>
+                    <strong style={{ fontSize: '0.9rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {rev.authorName}
                     </strong>
                     {isMine && (
                       <span style={{ 
-                        fontSize: '0.75rem', 
+                        fontSize: '0.7rem', 
                         background: 'var(--primary-color)', 
                         color: 'white', 
                         padding: '1px 6px', 
                         borderRadius: '9999px',
-                        fontWeight: '600'
+                        fontWeight: '600',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0
                       }}>
                         내 리뷰
                       </span>
                     )}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                     <div style={{ display: 'flex', gap: '2px' }}>
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <span key={star} style={{ color: star <= rev.rating ? '#fbbf24' : '#d1d5db', fontSize: '0.95rem' }}>
+                        <span key={star} style={{ color: star <= rev.rating ? '#fbbf24' : '#d1d5db', fontSize: '0.9rem' }}>
                           ★
                         </span>
                       ))}
                     </div>
                     {rev.createdAt && (
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                         {formatDate(rev.createdAt)}
                       </span>
                     )}
@@ -176,23 +179,24 @@ export default function MealReview({ schoolCode, date, mealType }) {
                 </div>
 
                 {rev.comment ? (
-                  <p style={{ margin: '4px 0 0 0', fontSize: '0.92rem', color: 'var(--text-main)', lineHeight: '1.4' }}>
+                  <p style={{ margin: '2px 0 0 0', fontSize: '0.9rem', color: 'var(--text-main)', lineHeight: '1.4', wordBreak: 'break-word' }}>
                     {rev.comment}
                   </p>
                 ) : null}
 
                 {/* Edit / Delete actions for author */}
                 {isMine && !isEditing && (
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px', justifyContent: 'flex-end' }}>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '2px', justifyContent: 'flex-end' }}>
                     <button
                       onClick={handleStartEdit}
                       style={{
                         background: 'transparent',
                         border: 'none',
                         color: 'var(--primary-color)',
-                        fontSize: '0.8rem',
+                        fontSize: '0.78rem',
                         cursor: 'pointer',
-                        padding: '2px 6px'
+                        padding: '2px 6px',
+                        fontFamily: 'inherit'
                       }}
                     >
                       수정
@@ -203,9 +207,10 @@ export default function MealReview({ schoolCode, date, mealType }) {
                         background: 'transparent',
                         border: 'none',
                         color: 'var(--secondary-color)',
-                        fontSize: '0.8rem',
+                        fontSize: '0.78rem',
                         cursor: 'pointer',
-                        padding: '2px 6px'
+                        padding: '2px 6px',
+                        fontFamily: 'inherit'
                       }}
                     >
                       삭제
@@ -220,22 +225,17 @@ export default function MealReview({ schoolCode, date, mealType }) {
 
       {/* Input / Edit Form */}
       {(!myReview || isEditing) ? (
-        <div style={{
-          padding: '16px',
-          background: 'rgba(255, 255, 255, 0.4)',
-          borderRadius: '12px',
-          border: '1px solid var(--border-color)'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-main)' }}>
+        <div className="meal-review-form">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
+            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-main)', whiteSpace: 'nowrap' }}>
               {isEditing ? '✏️ 내 리뷰 수정하기' : '✍️ 리뷰 남기기'}
             </span>
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <span 
                   key={star} 
                   className="review-star"
-                  style={{ color: star <= rating ? '#fbbf24' : '#d1d5db', cursor: 'pointer', fontSize: '1.4rem' }}
+                  style={{ color: star <= rating ? '#fbbf24' : '#d1d5db', cursor: 'pointer', fontSize: '1.35rem' }}
                   onClick={() => setRating(star)}
                   title={`${star}점`}
                 >
@@ -251,17 +251,18 @@ export default function MealReview({ schoolCode, date, mealType }) {
             placeholder="오늘 급식에 대한 솔직한 한줄평을 남겨주세요 (선택)"
             style={{
               width: '100%',
-              padding: '10px 14px',
+              padding: '9px 12px',
               borderRadius: '10px',
               border: '1px solid var(--border-color)',
               background: 'var(--card-bg)',
               resize: 'vertical',
-              minHeight: '60px',
+              minHeight: '56px',
               marginBottom: '10px',
               fontFamily: 'inherit',
               fontSize: '0.9rem',
               color: 'var(--text-main)',
-              outline: 'none'
+              outline: 'none',
+              boxSizing: 'border-box'
             }}
           />
 
@@ -271,7 +272,7 @@ export default function MealReview({ schoolCode, date, mealType }) {
                 type="button"
                 onClick={handleCancelEdit}
                 className="btn-secondary"
-                style={{ fontSize: '0.85rem', padding: '6px 14px' }}
+                style={{ fontSize: '0.82rem', padding: '5px 12px' }}
               >
                 취소
               </button>
@@ -280,7 +281,7 @@ export default function MealReview({ schoolCode, date, mealType }) {
               type="button"
               onClick={handleSave} 
               className="btn-primary" 
-              style={{ fontSize: '0.85rem', padding: '6px 18px' }}
+              style={{ fontSize: '0.82rem', padding: '5px 16px' }}
             >
               {isEditing ? '수정 완료' : '리뷰 등록'}
             </button>
@@ -291,7 +292,7 @@ export default function MealReview({ schoolCode, date, mealType }) {
           <button
             onClick={handleStartEdit}
             className="btn-secondary"
-            style={{ fontSize: '0.85rem', padding: '6px 16px' }}
+            style={{ fontSize: '0.82rem', padding: '5px 14px' }}
           >
             ✏️ 내 리뷰 수정하기
           </button>

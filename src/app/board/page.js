@@ -488,7 +488,7 @@ export default function BoardPage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '20px'
+          padding: '12px'
         }}>
           <div 
             className="glass-container" 
@@ -497,9 +497,8 @@ export default function BoardPage() {
               maxWidth: '560px', 
               maxHeight: '90vh', 
               overflowY: 'auto', 
-              padding: '2rem',
               position: 'relative',
-              borderRadius: '24px'
+              borderRadius: '20px'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
