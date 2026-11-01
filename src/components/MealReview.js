@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getMealReviews, saveMealReview, deleteMealReview } from '@/lib/userData';
+import { getMealReviews, saveMealReview, deleteMealReview, getClientId } from '@/lib/userData';
 import { getCurrentUser } from '@/lib/auth';
 
 export default function MealReview({ schoolCode, date, mealType }) {
@@ -31,8 +31,8 @@ export default function MealReview({ schoolCode, date, mealType }) {
     };
   }, [schoolCode, date, mealType]);
 
-  const curUserId = currentUser?.email?.trim()?.toLowerCase();
-  const myReview = curUserId ? reviews.find((r) => r.authorId === curUserId) : null;
+  const curUserId = getClientId();
+  const myReview = reviews.find((r) => r.authorId === curUserId);
 
   const handleStartEdit = () => {
     if (myReview) {

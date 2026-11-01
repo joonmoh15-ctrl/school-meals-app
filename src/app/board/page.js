@@ -11,6 +11,7 @@ import {
   deleteBoardPost 
 } from '@/lib/boardData';
 import { getCurrentUser } from '@/lib/auth';
+import { getClientId } from '@/lib/userData';
 
 const CATEGORIES = ['전체', '✨ 급식 자랑', '🍚 오늘의 급식', '🥗 영양사 꿀팁', '💬 수다방'];
 
@@ -134,7 +135,7 @@ export default function BoardPage() {
     }
   };
 
-  const curUserId = currentUser?.email?.trim()?.toLowerCase();
+  const curUserId = getClientId();
 
   return (
     <main className="layout-wrapper" style={{ maxWidth: '850px', paddingTop: '5.5rem' }}>

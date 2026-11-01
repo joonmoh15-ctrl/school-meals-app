@@ -2,24 +2,26 @@
 
 import { getCurrentUser } from './auth';
 
-// Helper to get active user scope ID (email or 'guest')
-export const getActiveUserKey = () => {
-  if (typeof window === 'undefined') return 'guest';
-  const cur = getCurrentUser();
-  if (cur && cur.email) {
-    return cur.email.trim().toLowerCase();
+// Helper to get persistent anonymous client ID for review authorship without login
+export const getClientId = () => {
+  if (typeof window === 'undefined') return 'client_guest';
+  let cid = localStorage.getItem('app_client_id');
+  if (!cid) {
+    cid = 'client_' + Math.random().toString(36).substring(2, 10);
+    localStorage.setItem('app_client_id', cid);
   }
-  return 'guest';
+  return cid;
 };
+
+export const getActiveUserKey = () => 'local';
 
 // -------------------------------------------------------------
 // FAVORITE SCHOOLS (즐겨찾는 학교)
 // -------------------------------------------------------------
 export const getFavoriteSchools = () => {
   if (typeof window === 'undefined') return [];
-  const userKey = getActiveUserKey();
-  const scopedKey = `school_favorites_${userKey}`;
-  const saved = localStorage.getItem(scopedKey);
+  const primaryKey = 'school_favorites_local';
+  const saved = localStorage.getItem(primaryKey);
   
   if (saved) {
     try {
@@ -30,25 +32,29 @@ export const getFavoriteSchools = () => {
     }
   }
 
-  // Migrate legacy global favorites for the first active user
-  const legacy = localStorage.getItem('school_favorites');
-  if (legacy && userKey !== 'guest') {
-    try {
-      const parsed = JSON.parse(legacy);
-      localStorage.setItem(scopedKey, legacy);
-      localStorage.removeItem('school_favorites');
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {}
-  }
+  // Migrate any previous favorite schools (from legacy user keys or global)
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k === 'school_favorites' || k.startsWith('school_favorites_'))) {
+        const val = localStorage.getItem(k);
+        if (val) {
+          const parsed = JSON.parse(val);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            localStorage.setItem(primaryKey, JSON.stringify(parsed));
+            return parsed;
+          }
+        }
+      }
+    }
+  } catch (e) {}
 
   return [];
 };
 
 export const saveFavoriteSchools = (schools) => {
   if (typeof window === 'undefined') return;
-  const userKey = getActiveUserKey();
-  const scopedKey = `school_favorites_${userKey}`;
-  localStorage.setItem(scopedKey, JSON.stringify(schools));
+  localStorage.setItem('school_favorites_local', JSON.stringify(schools));
   window.dispatchEvent(new Event('school_favorites_change'));
   window.dispatchEvent(new Event('storage'));
 };
@@ -88,9 +94,8 @@ export const toggleFavoriteSchool = (school) => {
 // -------------------------------------------------------------
 export const getFavoriteMeals = () => {
   if (typeof window === 'undefined') return [];
-  const userKey = getActiveUserKey();
-  const scopedKey = `meal_favorites_${userKey}`;
-  const saved = localStorage.getItem(scopedKey);
+  const primaryKey = 'meal_favorites_local';
+  const saved = localStorage.getItem(primaryKey);
 
   if (saved) {
     try {
@@ -101,25 +106,29 @@ export const getFavoriteMeals = () => {
     }
   }
 
-  // Migrate legacy global meals for the first active user
-  const legacy = localStorage.getItem('meal_favorites');
-  if (legacy && userKey !== 'guest') {
-    try {
-      const parsed = JSON.parse(legacy);
-      localStorage.setItem(scopedKey, legacy);
-      localStorage.removeItem('meal_favorites');
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {}
-  }
+  // Migrate any previous favorite meals
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k === 'meal_favorites' || k.startsWith('meal_favorites_'))) {
+        const val = localStorage.getItem(k);
+        if (val) {
+          const parsed = JSON.parse(val);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            localStorage.setItem(primaryKey, JSON.stringify(parsed));
+            return parsed;
+          }
+        }
+      }
+    }
+  } catch (e) {}
 
   return [];
 };
 
 export const saveFavoriteMeals = (dishes) => {
   if (typeof window === 'undefined') return;
-  const userKey = getActiveUserKey();
-  const scopedKey = `meal_favorites_${userKey}`;
-  localStorage.setItem(scopedKey, JSON.stringify(dishes));
+  localStorage.setItem('meal_favorites_local', JSON.stringify(dishes));
   window.dispatchEvent(new Event('meal_favorites_change'));
   window.dispatchEvent(new Event('storage'));
 };
@@ -147,7 +156,7 @@ export const toggleFavoriteMeal = (dishName) => {
 };
 
 // -------------------------------------------------------------
-// MEAL REVIEWS (급식 리뷰 - 급식별 유지 및 사용자별 작성자 관리)
+// MEAL REVIEWS (급식 리뷰 - 별도 회원가입 없이 누구나 작성)
 // -------------------------------------------------------------
 export const getMealReviewsKey = (schoolCode, date, mealType) => {
   return `meal_reviews_${schoolCode}_${date}_${mealType}`;
@@ -168,40 +177,6 @@ export const getMealReviews = (schoolCode, date, mealType) => {
     }
   }
 
-  // Auto-migration from legacy review keys if none found in new key
-  if (reviews.length === 0) {
-    try {
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && (k === `review_${schoolCode}_${date}_${mealType}` || (k.startsWith('review_') && k.endsWith(`_${schoolCode}_${date}_${mealType}`)))) {
-          try {
-            const val = JSON.parse(localStorage.getItem(k));
-            if (val && !reviews.some(r => r.legacyKey === k)) {
-              const parts = k.split('_');
-              const authorId = val.authorId || val.userKey || (parts.length >= 5 ? parts[1] : 'guest');
-              reviews.push({
-                id: 'migrated_' + k,
-                legacyKey: k,
-                schoolCode,
-                date,
-                mealType,
-                authorId,
-                authorName: val.authorName || (authorId !== 'guest' ? authorId : '익명 학생'),
-                authorAvatar: val.authorAvatar || '🧑‍🎓',
-                rating: val.rating || 0,
-                comment: val.comment || '',
-                createdAt: val.date || new Date().toISOString()
-              });
-            }
-          } catch(e) {}
-        }
-      }
-      if (reviews.length > 0) {
-        localStorage.setItem(key, JSON.stringify(reviews));
-      }
-    } catch(e) {}
-  }
-
   return reviews;
 };
 
@@ -209,8 +184,8 @@ export const saveMealReview = (schoolCode, date, mealType, reviewData) => {
   if (typeof window === 'undefined') return null;
   const key = getMealReviewsKey(schoolCode, date, mealType);
   const curUser = getCurrentUser();
-  const authorId = curUser?.email?.trim()?.toLowerCase() || 'guest';
-  const authorName = curUser?.name || '익명 학생';
+  const authorId = getClientId();
+  const authorName = curUser?.name || '익명의 학생';
   const authorAvatar = curUser?.avatar || '🧑‍🎓';
 
   const reviews = getMealReviews(schoolCode, date, mealType);
@@ -244,14 +219,13 @@ export const saveMealReview = (schoolCode, date, mealType, reviewData) => {
 export const deleteMealReview = (schoolCode, date, mealType, reviewId) => {
   if (typeof window === 'undefined') return;
   const key = getMealReviewsKey(schoolCode, date, mealType);
-  const curUser = getCurrentUser();
-  const curUserId = curUser?.email?.trim()?.toLowerCase() || 'guest';
+  const curClientId = getClientId();
   let reviews = getMealReviews(schoolCode, date, mealType);
 
   if (reviewId) {
     reviews = reviews.filter(r => r.id !== reviewId);
   } else {
-    reviews = reviews.filter(r => r.authorId !== curUserId);
+    reviews = reviews.filter(r => r.authorId !== curClientId);
   }
 
   localStorage.setItem(key, JSON.stringify(reviews));
@@ -261,10 +235,7 @@ export const deleteMealReview = (schoolCode, date, mealType, reviewId) => {
 
 export const getUserReviews = () => {
   if (typeof window === 'undefined') return [];
-  const curUser = getCurrentUser();
-  const userKey = curUser?.email?.trim()?.toLowerCase();
-  if (!userKey) return [];
-
+  const curClientId = getClientId();
   const userReviews = [];
 
   try {
@@ -275,7 +246,8 @@ export const getUserReviews = () => {
           const list = JSON.parse(localStorage.getItem(key));
           if (Array.isArray(list)) {
             list.forEach(rev => {
-              if (rev.authorId === userKey) {
+              // Match reviews created by this device / client
+              if (rev.authorId === curClientId || rev.authorId === 'guest' || rev.authorId === 'local') {
                 userReviews.push(rev);
               }
             });
@@ -285,33 +257,6 @@ export const getUserReviews = () => {
     }
   } catch (e) {}
 
-  // Also check legacy keys if any
-  try {
-    const prefix = `review_${userKey}_`;
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith(prefix)) {
-        try {
-          const val = JSON.parse(localStorage.getItem(key));
-          const parts = key.substring(prefix.length).split('_');
-          if (val && !userReviews.some(r => r.schoolCode === parts[0] && r.date === parts[1])) {
-            userReviews.push({
-              id: key,
-              schoolCode: parts[0] || '',
-              date: parts[1] || '',
-              mealType: parts[2] || '중식',
-              authorId: userKey,
-              authorName: curUser?.name || '나',
-              rating: val.rating || 0,
-              comment: val.comment || '',
-              createdAt: val.date || ''
-            });
-          }
-        } catch(e) {}
-      }
-    }
-  } catch(e) {}
-
   return userReviews;
 };
 
@@ -320,9 +265,8 @@ export const getUserReviews = () => {
 // -------------------------------------------------------------
 export const getMyAllergies = () => {
   if (typeof window === 'undefined') return [];
-  const userKey = getActiveUserKey();
-  const scopedKey = `my_allergies_${userKey}`;
-  const saved = localStorage.getItem(scopedKey);
+  const primaryKey = 'my_allergies_local';
+  const saved = localStorage.getItem(primaryKey);
 
   if (saved) {
     try {
@@ -333,24 +277,29 @@ export const getMyAllergies = () => {
     }
   }
 
-  const legacy = localStorage.getItem('my_allergies');
-  if (legacy && userKey !== 'guest') {
-    try {
-      const parsed = JSON.parse(legacy);
-      localStorage.setItem(scopedKey, legacy);
-      localStorage.removeItem('my_allergies');
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {}
-  }
+  // Migrate any previous allergies
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k === 'my_allergies' || k.startsWith('my_allergies_'))) {
+        const val = localStorage.getItem(k);
+        if (val) {
+          const parsed = JSON.parse(val);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            localStorage.setItem(primaryKey, JSON.stringify(parsed));
+            return parsed;
+          }
+        }
+      }
+    }
+  } catch (e) {}
 
   return [];
 };
 
 export const saveMyAllergies = (allergies) => {
   if (typeof window === 'undefined') return;
-  const userKey = getActiveUserKey();
-  const scopedKey = `my_allergies_${userKey}`;
-  localStorage.setItem(scopedKey, JSON.stringify(allergies));
+  localStorage.setItem('my_allergies_local', JSON.stringify(allergies));
   window.dispatchEvent(new Event('allergy_change'));
   window.dispatchEvent(new Event('storage'));
 };

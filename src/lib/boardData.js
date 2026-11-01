@@ -1,6 +1,7 @@
 'use client';
 
 import { getCurrentUser } from './auth';
+import { getClientId } from './userData';
 
 export const INITIAL_POSTS = [
   {
@@ -172,7 +173,7 @@ export const saveBoardPosts = (posts) => {
 export const createBoardPost = ({ title, content, category, schoolName, image }) => {
   const posts = getBoardPosts();
   const curUser = getCurrentUser();
-  const authorId = curUser?.email?.trim()?.toLowerCase() || 'guest_' + Math.random().toString(36).slice(2, 6);
+  const authorId = getClientId();
   const authorName = curUser?.name || '익명 학생';
   const authorAvatar = curUser?.avatar || '🧑‍🎓';
   const userSchool = schoolName || curUser?.schoolInfo || '학교 미설정';
@@ -201,8 +202,7 @@ export const createBoardPost = ({ title, content, category, schoolName, image })
 
 export const toggleLikePost = (postId) => {
   const posts = getBoardPosts();
-  const curUser = getCurrentUser();
-  const userId = curUser?.email?.trim()?.toLowerCase() || 'guest';
+  const userId = getClientId();
 
   const updated = posts.map((post) => {
     if (post.id === postId) {
@@ -227,7 +227,7 @@ export const toggleLikePost = (postId) => {
 export const addPostComment = (postId, commentText) => {
   const posts = getBoardPosts();
   const curUser = getCurrentUser();
-  const authorId = curUser?.email?.trim()?.toLowerCase() || 'guest';
+  const authorId = getClientId();
   const authorName = curUser?.name || '익명 학생';
   const authorAvatar = curUser?.avatar || '🧑‍🎓';
 

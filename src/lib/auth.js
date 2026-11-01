@@ -1,187 +1,149 @@
 'use client';
 
-// Helper to get users from localStorage
-const getUsers = () => {
-  if (typeof window === 'undefined') return [];
-  const users = localStorage.getItem('app_users');
-  return users ? JSON.parse(users) : [];
+// Privacy-First Local User Profile (No password, no email, no account registration)
+const DEFAULT_PROFILE = {
+  name: '익명의 학생',
+  avatar: '🧑‍🎓',
+  schoolInfo: '',
+  bio: '',
+  createdAt: new Date().toISOString()
 };
 
-// Helper to save users
-const saveUsers = (users) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('app_users', JSON.stringify(users));
-  }
-};
-
-export const registerUser = (email, password, name) => {
-  const users = getUsers();
-  const cleanId = (email || '').trim();
-  const cleanPassword = (password || '').trim();
-  const cleanName = (name || '').trim();
-  
-  if (!cleanId || !cleanPassword || !cleanName) {
-    return { success: false, message: '모든 항목을 입력해주세요.' };
-  }
-
-  if (users.find(u => (u.email || '').trim().toLowerCase() === cleanId.toLowerCase())) {
-    return { success: false, message: '이미 존재하는 아이디(이메일)입니다.' };
-  }
-
-  const newUser = { 
-    email: cleanId, 
-    password: cleanPassword, 
-    name: cleanName, 
-    createdAt: new Date().toISOString() 
-  };
-  users.push(newUser);
-  saveUsers(users);
-  
-  return { success: true, message: '회원가입 성공!' };
-};
-
-export const loginUser = (email, password) => {
-  const users = getUsers();
-  const cleanId = (email || '').trim().toLowerCase();
-  const cleanPassword = (password || '').trim();
-
-  const user = users.find(u => 
-    (u.email || '').trim().toLowerCase() === cleanId && 
-    (u.password || '').trim() === cleanPassword
-  );
-  
-  if (user) {
-    if (typeof window !== 'undefined') {
-      // Omit password from session
-      const sessionUser = { ...user };
-      delete sessionUser.password;
-      localStorage.setItem('current_user', JSON.stringify(sessionUser));
-      // Dispatch events so components update immediately for the new user
-      window.dispatchEvent(new Event('auth_change'));
-      window.dispatchEvent(new Event('school_favorites_change'));
-      window.dispatchEvent(new Event('meal_favorites_change'));
-      window.dispatchEvent(new Event('review_change'));
-      window.dispatchEvent(new Event('allergy_change'));
-      window.dispatchEvent(new Event('storage'));
+// Clean up any legacy sensitive credentials from localStorage for privacy & security
+const cleanLegacyCredentials = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    if (localStorage.getItem('app_users')) {
+      localStorage.removeItem('app_users');
     }
-    return { success: true, message: '로그인 성공!', user };
-  }
-  
-  return { success: false, message: '아이디(이메일) 또는 비밀번호가 일치하지 않습니다.' };
+  } catch (e) {}
 };
 
-export const logoutUser = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('current_user');
-    window.dispatchEvent(new Event('auth_change'));
-    window.dispatchEvent(new Event('school_favorites_change'));
-    window.dispatchEvent(new Event('meal_favorites_change'));
-    window.dispatchEvent(new Event('review_change'));
-    window.dispatchEvent(new Event('allergy_change'));
-    window.dispatchEvent(new Event('storage'));
+export const getLocalProfile = () => {
+  if (typeof window === 'undefined') return DEFAULT_PROFILE;
+  cleanLegacyCredentials();
+
+  try {
+    const saved = localStorage.getItem('app_local_profile');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+
+    // Check if there was an existing name/avatar in legacy current_user
+    const legacyCur = localStorage.getItem('current_user');
+    if (legacyCur) {
+      try {
+        const parsed = JSON.parse(legacyCur);
+        const migrated = {
+          name: parsed.name || DEFAULT_PROFILE.name,
+          avatar: parsed.avatar || DEFAULT_PROFILE.avatar,
+          schoolInfo: parsed.schoolInfo || DEFAULT_PROFILE.schoolInfo,
+          bio: parsed.bio || DEFAULT_PROFILE.bio,
+          createdAt: parsed.createdAt || DEFAULT_PROFILE.createdAt
+        };
+        localStorage.setItem('app_local_profile', JSON.stringify(migrated));
+        localStorage.removeItem('current_user');
+        return migrated;
+      } catch (e) {}
+    }
+
+    // Initialize default profile
+    localStorage.setItem('app_local_profile', JSON.stringify(DEFAULT_PROFILE));
+    return DEFAULT_PROFILE;
+  } catch (e) {
+    return DEFAULT_PROFILE;
   }
 };
 
 export const getCurrentUser = () => {
-  if (typeof window === 'undefined') return null;
-  const user = localStorage.getItem('current_user');
-  return user ? JSON.parse(user) : null;
+  return getLocalProfile();
 };
 
 export const updateUserProfile = (updates) => {
   if (typeof window === 'undefined') return { success: false, message: '브라우저 환경이 아닙니다.' };
-  const current = getCurrentUser();
-  if (!current) return { success: false, message: '로그인이 필요합니다.' };
-
-  const users = getUsers();
-  const currentId = (current.email || '').trim().toLowerCase();
-  const index = users.findIndex(u => (u.email || '').trim().toLowerCase() === currentId);
-
-  if (index === -1) {
-    return { success: false, message: '사용자 정보를 찾을 수 없습니다.' };
-  }
-
-  const updatedUser = {
-    ...users[index],
-    name: updates.name !== undefined ? updates.name.trim() : users[index].name,
-    avatar: updates.avatar !== undefined ? updates.avatar : (users[index].avatar || '🧑‍🎓'),
-    schoolInfo: updates.schoolInfo !== undefined ? updates.schoolInfo.trim() : (users[index].schoolInfo || ''),
-    bio: updates.bio !== undefined ? updates.bio.trim() : (users[index].bio || ''),
+  
+  const current = getLocalProfile();
+  const updated = {
+    ...current,
+    name: updates.name !== undefined ? updates.name.trim() : current.name,
+    avatar: updates.avatar !== undefined ? updates.avatar : (current.avatar || '🧑‍🎓'),
+    schoolInfo: updates.schoolInfo !== undefined ? updates.schoolInfo.trim() : (current.schoolInfo || ''),
+    bio: updates.bio !== undefined ? updates.bio.trim() : (current.bio || '')
   };
 
-  users[index] = updatedUser;
-  saveUsers(users);
-
-  // Update session
-  const sessionUser = { ...updatedUser };
-  delete sessionUser.password;
-  localStorage.setItem('current_user', JSON.stringify(sessionUser));
-  window.dispatchEvent(new Event('auth_change'));
-
-  return { success: true, message: '프로필이 성공적으로 변경되었습니다!', user: sessionUser };
+  try {
+    localStorage.setItem('app_local_profile', JSON.stringify(updated));
+    window.dispatchEvent(new Event('auth_change'));
+    window.dispatchEvent(new Event('storage'));
+    return { success: true, message: '프로필 정보가 저장되었습니다!', user: updated };
+  } catch (e) {
+    return { success: false, message: '저장 중 오류가 발생했습니다.' };
+  }
 };
 
-export const changePassword = (oldPassword, newPassword) => {
-  if (typeof window === 'undefined') return { success: false, message: '브라우저 환경이 아닙니다.' };
-  const current = getCurrentUser();
-  if (!current) return { success: false, message: '로그인이 필요합니다.' };
-
-  if (!newPassword || newPassword.length < 4) {
-    return { success: false, message: '새 비밀번호는 최소 4자 이상이어야 합니다.' };
-  }
-
-  const users = getUsers();
-  const currentId = (current.email || '').trim().toLowerCase();
-  const index = users.findIndex(u => (u.email || '').trim().toLowerCase() === currentId);
-
-  if (index === -1) {
-    return { success: false, message: '사용자를 찾을 수 없습니다.' };
-  }
-
-  if (users[index].password !== oldPassword) {
-    return { success: false, message: '현재 비밀번호가 일치하지 않습니다.' };
-  }
-
-  users[index].password = newPassword.trim();
-  saveUsers(users);
-
-  return { success: true, message: '비밀번호가 안전하게 변경되었습니다!' };
-};
-
+// Activity summary (favorites, reviews, allergies)
 export const getUserActivitySummary = () => {
   if (typeof window === 'undefined') {
     return { schoolsCount: 0, mealsCount: 0, allergiesCount: 0, reviewsCount: 0 };
   }
-  
-  const current = getCurrentUser();
-  const userKey = current?.email?.trim()?.toLowerCase() || 'guest';
 
   let schoolsCount = 0;
   try {
-    const s = localStorage.getItem(`school_favorites_${userKey}`);
-    if (s) schoolsCount = JSON.parse(s).length;
-  } catch(e) {}
+    const keys = ['school_favorites_local', 'school_favorites_guest', 'school_favorites'];
+    for (const k of keys) {
+      const s = localStorage.getItem(k);
+      if (s) {
+        schoolsCount = Math.max(schoolsCount, JSON.parse(s).length);
+      }
+    }
+    // Also scan any school_favorites_*
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('school_favorites_')) {
+        const val = localStorage.getItem(key);
+        if (val) schoolsCount = Math.max(schoolsCount, JSON.parse(val).length);
+      }
+    }
+  } catch (e) {}
 
   let mealsCount = 0;
   try {
-    const m = localStorage.getItem(`meal_favorites_${userKey}`);
-    if (m) mealsCount = JSON.parse(m).length;
-  } catch(e) {}
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key === 'meal_favorites' || key.startsWith('meal_favorites_'))) {
+        const val = localStorage.getItem(key);
+        if (val) mealsCount = Math.max(mealsCount, JSON.parse(val).length);
+      }
+    }
+  } catch (e) {}
 
   let allergiesCount = 0;
   try {
-    const a = localStorage.getItem(`my_allergies_${userKey}`);
-    if (a) allergiesCount = JSON.parse(a).length;
-  } catch(e) {}
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key === 'my_allergies' || key.startsWith('my_allergies_'))) {
+        const val = localStorage.getItem(key);
+        if (val) allergiesCount = Math.max(allergiesCount, JSON.parse(val).length);
+      }
+    }
+  } catch (e) {}
 
   let reviewsCount = 0;
   try {
-    const prefix = `review_${userKey}_`;
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith(prefix)) reviewsCount++;
+      if (key && key.startsWith('meal_reviews_')) {
+        const list = JSON.parse(localStorage.getItem(key));
+        if (Array.isArray(list)) reviewsCount += list.length;
+      }
     }
-  } catch(e) {}
+  } catch (e) {}
 
   return { schoolsCount, mealsCount, allergiesCount, reviewsCount };
 };
+
+// Dummy backward-compatible helpers (no passwords/accounts stored)
+export const registerUser = () => ({ success: true, message: '회원가입이 불필요합니다.' });
+export const loginUser = () => ({ success: true, message: '로그인이 불필요합니다.' });
+export const logoutUser = () => {};
+export const changePassword = () => ({ success: true, message: '비밀번호를 사용하지 않습니다.' });
